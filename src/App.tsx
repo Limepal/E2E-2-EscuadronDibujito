@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useState } from 'react';
+import Login from './Pages/LoginPage';
+import DriverDashboard from './Pages/DriverDashboard';
+import TripDetail from './Pages/TripDetail';
 import './App.css'
 import AuthContextProvider from './context/AutContextProvider'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -10,9 +10,8 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import LoginPage from './Pages/LoginPage'
 import RegisterPage from './Pages/RegisterPage'
 
-function App() {
-  const [count, setCount] = useState(0)
 
+export default function App() {
   return (
     <AuthContextProvider>
       <BrowserRouter>
@@ -30,5 +29,3 @@ function App() {
     </AuthContextProvider>
   )
 }
-
-export default App
