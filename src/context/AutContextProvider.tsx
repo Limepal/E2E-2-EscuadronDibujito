@@ -42,6 +42,7 @@ const login = async (credentials: UserCredentials) => {
         localStorage.setItem("token", response);
         setToken(response);
         setError('');
+        
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const status = error.response?.status;
@@ -63,7 +64,7 @@ const register = async (register: UserRegister) => {
     setToken(response);
 };
   return (
-    <AuthContext.Provider value={{user,login,token,error, register}} >
+    <AuthContext.Provider value={{user,login,token,error, register, loading}} >
         {children}
     </AuthContext.Provider>
   )

@@ -7,6 +7,7 @@ type AuthContextType = {
     token: string;
     login: (credentials: UserCredentials) => Promise<void>;
     register:(register: UserRegister) => Promise<void>;
+    loading: boolean;
 }
 
 
