@@ -18,18 +18,17 @@ export default function TripDetail({ tripId, onBack }: Props) {
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState('');
 
-  async function loadTrip() {
-    try {
-      const data = await getTripById(tripId);
-      setTrip(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar el viaje');
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
+    async function loadTrip() {
+      try {
+        const data = await getTripById(tripId);
+        setTrip(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error al cargar el viaje');
+      } finally {
+        setLoading(false);
+      }
+    }
     loadTrip();
   }, [tripId]);
 

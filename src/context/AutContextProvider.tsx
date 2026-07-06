@@ -3,7 +3,7 @@ import type { User, UserCredentials, UserRegister } from '../types/type'
 import api from '../api/axios';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
-import * as authService from '../services/AuthService'
+import * as authService from '../services/authService'
 
 function AuthContextProvider({children}:{children:ReactNode}) {
     const [user,setUser] = useState<User | null>(null);
@@ -11,17 +11,17 @@ function AuthContextProvider({children}:{children:ReactNode}) {
         localStorage.getItem('token') || ''
     );
     const [error, setError] = useState('');
-    const [loading, setLoadin] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
-        setLoadin(true)
+        setLoading(true)
         const getUser = async () =>{
             if(!token){
-                setLoadin(false)
+                setLoading(false)
                 return
             }
             try {
-                const res = await api.get('/user/me');
+                const res = await api.get('/users/me');
                 setUser(res.data);
             } catch(error){
                 console.log(error);
@@ -29,7 +29,7 @@ function AuthContextProvider({children}:{children:ReactNode}) {
                 setToken('');
                 setUser(null);
             }finally{
-            setLoadin(false)
+            setLoading(false)
         }
         } 
         getUser();
@@ -44,24 +44,33 @@ const login = async (credentials: UserCredentials) => {
         setError('');
         
     } catch (error) {
+        let msg = "Ocurrió un error inesperado.";
         if (axios.isAxiosError(error)) {
             const status = error.response?.status;
             if (status === 401) {
-                setError("Correo o contraseña incorrectos.");
+                msg = "Correo o contraseña incorrectos.";
             } else if (status === 404) {
-                setError("Correo no existe.");
-            } else {
-                setError("Ocurrió un error inesperado.");
+                msg = "Correo no existe.";
             }
-        } else {
-            setError("Error desconocido.");
         }
+        setError(msg);
+        throw new Error(msg);
     }
 };
 const register = async (register: UserRegister) => {
-    const response = await authService.register(register);
-    localStorage.setItem("token", response);
-    setToken(response);
+    try {
+        const response = await authService.register(register);
+        localStorage.setItem("token", response);
+        setToken(response);
+        setError('');
+    } catch (error) {
+        let msg = "Error al registrarse.";
+        if (axios.isAxiosError(error) && error.response?.data?.error) {
+            msg = error.response.data.error;
+        }
+        setError(msg);
+        throw new Error(msg);
+    }
 };
   return (
     <AuthContext.Provider value={{user,login,token,error, register, loading}} >

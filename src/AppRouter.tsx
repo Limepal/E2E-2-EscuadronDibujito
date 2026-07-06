@@ -4,6 +4,9 @@ import RegisterPage from './Pages/RegisterPage'
 import PassangerDashboardPage from './Pages/PassangerDashboardPage'
 import DriverDashboard from './Pages/DriverDashboard'
 import TripDetail from './Pages/TripDetail'
+import RequestTripPage from './Pages/RequestTripPage'
+import PassengerTripDetailPage from './Pages/PassengerTripDetailPage'
+import Historial from './Pages/Historial'
 import ProtectedRoute from './routes/ProtectedRoute'
 import useAuth from './hooks/useAuth'
 import type { Role } from './types'
@@ -40,6 +43,7 @@ function DriverDashboardRoute() {
         localStorage.removeItem('token')
         navigate('/login', { replace: true })
       }}
+      onHistory={() => navigate('/driver/history')}
     />
   )
 }
@@ -56,13 +60,15 @@ function DriverTripDetailRoute() {
   return <TripDetail tripId={tripId} onBack={() => navigate('/driver')} />
 }
 
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className='p-6'>
-      {/* Aca va la pantalla real de: {title} */}
-      <h1>{title}</h1>
-    </div>
-  )
+function PassengerTripDetailRoute() {
+  const { id } = useParams()
+  const tripId = Number(id)
+
+  if (!id || Number.isNaN(tripId)) {
+    return <Navigate to='/passenger' replace />
+  }
+
+  return <PassengerTripDetailPage tripId={tripId} />
 }
 
 function AppRouter() {
@@ -75,15 +81,15 @@ function AppRouter() {
 
         <Route element={<ProtectedRoute allowedRoles={['PASSENGER']} />}>
           <Route path='/passenger' element={<PassangerDashboardPage />} />
-          <Route path='/passenger/request-trip' element={<PlaceholderPage title='Solicitar viaje' />} />
-          <Route path='/passenger/trips/:id' element={<PlaceholderPage title='Detalle de viaje pasajero' />} />
-          <Route path='/passenger/history' element={<PlaceholderPage title='Historial pasajero' />} />
+          <Route path='/passenger/request-trip' element={<RequestTripPage />} />
+          <Route path='/passenger/trips/:id' element={<PassengerTripDetailRoute />} />
+          <Route path='/passenger/history' element={<Historial />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={['DRIVER']} />}>
           <Route path='/driver' element={<DriverDashboardRoute />} />
           <Route path='/driver/trips/:id' element={<DriverTripDetailRoute />} />
-          <Route path='/driver/history' element={<PlaceholderPage title='Historial conductor' />} />
+          <Route path='/driver/history' element={<Historial />} />
         </Route>
 
         <Route path='*' element={<Navigate to='/' replace />} />
