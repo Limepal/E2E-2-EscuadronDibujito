@@ -8,10 +8,11 @@ import StatusBadge from '../statusBadge';
 interface Props {
   onOpenTrip: (tripId: number) => void;
   onLogout: () => void;
+  onHistory?: () => void;
 }
 
 
-export default function DriverDashboard({ onOpenTrip, onLogout }: Props) {
+export default function DriverDashboard({ onOpenTrip, onLogout, onHistory }: Props) {
   const [me, setMe] = useState<User | null>(null);
   const [pendingTrips, setPendingTrips] = useState<Trip[]>([]);
   const [myTrips, setMyTrips] = useState<Trip[]>([]);
@@ -67,7 +68,7 @@ export default function DriverDashboard({ onOpenTrip, onLogout }: Props) {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">
-            Hola, {me?.firstName} 👋
+            Hola, {me?.firstName}, bienvenido devuelta.
           </h1>
           <p className="text-slate-500 text-sm">
             Tu rating actual:{' '}
@@ -76,12 +77,22 @@ export default function DriverDashboard({ onOpenTrip, onLogout }: Props) {
             </span>
           </p>
         </div>
-        <button
-          onClick={onLogout}
-          className="text-sm text-slate-500 hover:text-slate-800 underline"
-        >
-          Cerrar sesión
-        </button>
+        <div className="flex items-center gap-4">
+          {onHistory && (
+            <button
+              onClick={onHistory}
+              className="text-sm text-slate-500 hover:text-slate-800 underline"
+            >
+              Historial
+            </button>
+          )}
+          <button
+            onClick={onLogout}
+            className="text-sm text-slate-500 hover:text-slate-800 underline"
+          >
+            Cerrar sesión
+          </button>
+        </div>
       </div>
 
       {error && (
